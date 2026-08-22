@@ -5,184 +5,1237 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#111827">
 <title>StockFlow — Inventory Demo</title>
+
 <style>
 *{box-sizing:border-box}
-:root{--bg:#f4f6f8;--card:#fff;--text:#111827;--muted:#6b7280;--line:#e5e7eb;--dark:#111827;--green:#16803c;--greenbg:#eaf8ef;--red:#c62828;--redbg:#fff0f0;--blue:#2563eb;--orange:#b45309}
-body{margin:0;background:var(--bg);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--text)}
-button,input{font:inherit}
-.app{max-width:760px;margin:auto;min-height:100vh;padding-bottom:28px}
-.top{background:var(--dark);color:#fff;padding:24px 18px 22px;border-radius:0 0 22px 22px}
-.top h1{font-size:22px;margin:0 0 5px}.top p{margin:0;color:#cbd5e1;font-size:13px}
-.content{padding:16px}
-.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px}
-.stat{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:15px}.stat span{font-size:12px;color:var(--muted)}.stat strong{display:block;font-size:23px;margin-top:4px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:14px}
-.card h2{font-size:16px;margin:0 0 12px}.scan-btn{width:100%;border:0;background:var(--dark);color:#fff;padding:15px;border-radius:13px;font-weight:700;cursor:pointer}
-.scan-area{display:none;margin-top:12px}.scan-area.active{display:block}
-#reader{width:100%;overflow:hidden;border-radius:14px;background:#000}
-.note{font-size:12px;color:var(--muted);margin:10px 0 0;line-height:1.45}
-.simulate{display:flex;gap:8px;margin-top:12px}.simulate input{min-width:0;flex:1;border:1px solid var(--line);border-radius:11px;padding:12px}.simulate button{border:0;border-radius:11px;padding:0 14px;background:#e5e7eb;cursor:pointer}
-.product{display:none;border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:12px}.product.show{display:block}
-.product-top{display:flex;justify-content:space-between;gap:10px}.product-name{font-weight:750}.code{font-size:11px;color:var(--muted);margin-top:3px}.stock{font-weight:750}
-.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:13px}.actions button{border:0;border-radius:11px;padding:13px;font-weight:750;cursor:pointer}.in{background:var(--greenbg);color:var(--green)}.out{background:var(--redbg);color:var(--red)}
-.qty{margin-top:12px}.qty label{font-size:12px;color:var(--muted)}.qty input{width:100%;margin-top:5px;border:1px solid var(--line);border-radius:11px;padding:12px}
-.history-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 0;border-bottom:1px solid var(--line)}.history-item:last-child{border-bottom:0}.h-left{min-width:0}.h-name{font-weight:650;font-size:14px}.h-meta{font-size:11px;color:var(--muted);margin-top:3px}.badge{font-size:11px;font-weight:800;padding:5px 8px;border-radius:999px}.badge.inb{background:var(--greenbg);color:var(--green)}.badge.outb{background:var(--redbg);color:var(--red)}
-.empty{text-align:center;color:var(--muted);font-size:13px;padding:18px 5px}
-.reset{width:100%;background:transparent;border:1px solid #d1d5db;color:#4b5563;border-radius:11px;padding:11px;cursor:pointer}
-.toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,120px);background:#111827;color:#fff;padding:11px 15px;border-radius:10px;font-size:13px;transition:.25s;z-index:20;box-shadow:0 8px 25px #0002}.toast.show{transform:translate(-50%,0)}
-@media(min-width:600px){.stats{grid-template-columns:repeat(4,1fr)}}
+
+:root{
+  --bg:#f4f6f8;
+  --card:#fff;
+  --text:#111827;
+  --muted:#6b7280;
+  --line:#e5e7eb;
+  --dark:#111827;
+  --green:#16803c;
+  --greenbg:#eaf8ef;
+  --red:#c62828;
+  --redbg:#fff0f0;
+}
+
+body{
+  margin:0;
+  background:var(--bg);
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  color:var(--text);
+}
+
+button,input{
+  font:inherit;
+}
+
+.app{
+  max-width:760px;
+  margin:auto;
+  min-height:100vh;
+  padding-bottom:28px;
+}
+
+.top{
+  background:var(--dark);
+  color:#fff;
+  padding:24px 18px 22px;
+  border-radius:0 0 22px 22px;
+}
+
+.top h1{
+  font-size:22px;
+  margin:0 0 5px;
+}
+
+.top p{
+  margin:0;
+  color:#cbd5e1;
+  font-size:13px;
+}
+
+.content{
+  padding:16px;
+}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+  margin-bottom:14px;
+}
+
+.stat{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:15px;
+  padding:15px;
+}
+
+.stat span{
+  font-size:12px;
+  color:var(--muted);
+}
+
+.stat strong{
+  display:block;
+  font-size:23px;
+  margin-top:4px;
+}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:16px;
+  margin-bottom:14px;
+}
+
+.card h2{
+  font-size:16px;
+  margin:0 0 12px;
+}
+
+.scan-btn{
+  width:100%;
+  border:0;
+  background:var(--dark);
+  color:#fff;
+  padding:15px;
+  border-radius:13px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.scan-area{
+  display:none;
+  margin-top:12px;
+}
+
+.scan-area.active{
+  display:block;
+}
+
+#reader{
+  width:100%;
+  overflow:hidden;
+  border-radius:14px;
+  background:#000;
+}
+
+.note{
+  font-size:12px;
+  color:var(--muted);
+  margin:10px 0 0;
+  line-height:1.45;
+}
+
+.simulate{
+  display:flex;
+  gap:8px;
+  margin-top:12px;
+}
+
+.simulate input{
+  min-width:0;
+  flex:1;
+  border:1px solid var(--line);
+  border-radius:11px;
+  padding:12px;
+}
+
+.simulate button{
+  border:0;
+  border-radius:11px;
+  padding:0 14px;
+  background:#e5e7eb;
+  cursor:pointer;
+}
+
+.product{
+  display:none;
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:14px;
+  margin-top:12px;
+}
+
+.product.show{
+  display:block;
+}
+
+.product-top{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+}
+
+.product-name{
+  font-weight:750;
+}
+
+.code{
+  font-size:11px;
+  color:var(--muted);
+  margin-top:3px;
+}
+
+.stock{
+  font-weight:750;
+}
+
+.actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+  margin-top:13px;
+}
+
+.actions button{
+  border:0;
+  border-radius:11px;
+  padding:13px;
+  font-weight:750;
+  cursor:pointer;
+}
+
+.in{
+  background:var(--greenbg);
+  color:var(--green);
+}
+
+.out{
+  background:var(--redbg);
+  color:var(--red);
+}
+
+.qty{
+  margin-top:12px;
+}
+
+.qty label{
+  font-size:12px;
+  color:var(--muted);
+}
+
+.qty input{
+  width:100%;
+  margin-top:5px;
+  border:1px solid var(--line);
+  border-radius:11px;
+  padding:12px;
+}
+
+.history-item{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:12px 0;
+  border-bottom:1px solid var(--line);
+}
+
+.history-item:last-child{
+  border-bottom:0;
+}
+
+.h-left{
+  min-width:0;
+}
+
+.h-name{
+  font-weight:650;
+  font-size:14px;
+}
+
+.h-meta{
+  font-size:11px;
+  color:var(--muted);
+  margin-top:3px;
+}
+
+.badge{
+  font-size:11px;
+  font-weight:800;
+  padding:5px 8px;
+  border-radius:999px;
+}
+
+.badge.inb{
+  background:var(--greenbg);
+  color:var(--green);
+}
+
+.badge.outb{
+  background:var(--redbg);
+  color:var(--red);
+}
+
+.empty{
+  text-align:center;
+  color:var(--muted);
+  font-size:13px;
+  padding:18px 5px;
+}
+
+.reset{
+  width:100%;
+  background:transparent;
+  border:1px solid #d1d5db;
+  color:#4b5563;
+  border-radius:11px;
+  padding:11px;
+  cursor:pointer;
+}
+
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:22px;
+  transform:translate(-50%,120px);
+  background:#111827;
+  color:#fff;
+  padding:11px 15px;
+  border-radius:10px;
+  font-size:13px;
+  transition:.25s;
+  z-index:20;
+  box-shadow:0 8px 25px #0002;
+}
+
+.toast.show{
+  transform:translate(-50%,0);
+}
+
+/* Scanner UI */
+#reader video{
+  width:100% !important;
+  border-radius:14px;
+}
+
+#reader__dashboard{
+  padding:10px !important;
+}
+
+#reader__dashboard_section_csr button{
+  background:#111827 !important;
+  color:#fff !important;
+  border:0 !important;
+  border-radius:8px !important;
+  padding:8px 12px !important;
+}
+
+#reader__scan_region{
+  min-height:250px;
+}
+
+@media(min-width:600px){
+  .stats{
+    grid-template-columns:repeat(4,1fr);
+  }
+}
 </style>
 </head>
+
 <body>
+
 <div class="app">
+
 <header class="top">
   <h1>StockFlow</h1>
   <p>Mobile Inventory Demo · Scan → IN / OUT → History</p>
 </header>
 
 <main class="content">
+
 <section class="stats">
-  <div class="stat"><span>Products</span><strong id="totalProducts">0</strong></div>
-  <div class="stat"><span>Total Stock</span><strong id="totalStock">0</strong></div>
-  <div class="stat"><span>Today's IN</span><strong id="todayIn">0</strong></div>
-  <div class="stat"><span>Today's OUT</span><strong id="todayOut">0</strong></div>
+
+  <div class="stat">
+    <span>Products</span>
+    <strong id="totalProducts">0</strong>
+  </div>
+
+  <div class="stat">
+    <span>Total Stock</span>
+    <strong id="totalStock">0</strong>
+  </div>
+
+  <div class="stat">
+    <span>Today's IN</span>
+    <strong id="todayIn">0</strong>
+  </div>
+
+  <div class="stat">
+    <span>Today's OUT</span>
+    <strong id="todayOut">0</strong>
+  </div>
+
 </section>
 
+
 <section class="card">
+
   <h2>Scan Product</h2>
-  <button class="scan-btn" id="scanBtn">📷 Open Camera Scanner</button>
+
+  <button class="scan-btn" id="scanBtn">
+    📷 Open Camera Scanner
+  </button>
+
   <div class="scan-area" id="scanArea">
+
     <div id="reader"></div>
-    <p class="note">Point the phone camera at a QR/barcode. For this GitHub demo, camera access requires HTTPS (GitHub Pages works).</p>
+
+    <p class="note">
+      Scan QR codes or common 1D barcodes such as EAN-13,
+      EAN-8, UPC, Code 128, Code 39 and ITF.
+    </p>
+
   </div>
+
 
   <div class="simulate">
-    <input id="codeInput" inputmode="numeric" placeholder="Demo: enter product code">
-    <button id="findBtn">Find</button>
+
+    <input
+      id="codeInput"
+      inputmode="numeric"
+      placeholder="Demo: enter product code"
+    >
+
+    <button id="findBtn">
+      Find
+    </button>
+
   </div>
+
 
   <div class="product" id="productBox">
+
     <div class="product-top">
-      <div><div class="product-name" id="productName"></div><div class="code" id="productCode"></div></div>
-      <div class="stock" id="productStock"></div>
+
+      <div>
+
+        <div
+          class="product-name"
+          id="productName">
+        </div>
+
+        <div
+          class="code"
+          id="productCode">
+        </div>
+
+      </div>
+
+      <div
+        class="stock"
+        id="productStock">
+      </div>
+
     </div>
-    <div class="qty"><label>Quantity</label><input id="qtyInput" type="number" min="1" value="1"></div>
+
+
+    <div class="qty">
+
+      <label>
+        Quantity
+      </label>
+
+      <input
+        id="qtyInput"
+        type="number"
+        min="1"
+        value="1"
+      >
+
+    </div>
+
+
     <div class="actions">
-      <button class="in" id="inBtn">＋ Stock IN</button>
-      <button class="out" id="outBtn">− Stock OUT</button>
+
+      <button
+        class="in"
+        id="inBtn">
+        ＋ Stock IN
+      </button>
+
+      <button
+        class="out"
+        id="outBtn">
+        − Stock OUT
+      </button>
+
     </div>
+
   </div>
+
 </section>
 
+
 <section class="card">
+
   <h2>Recent Activity</h2>
+
   <div id="history"></div>
+
 </section>
+
 
 <section class="card">
+
   <h2>Demo Controls</h2>
-  <button class="reset" id="resetBtn">Reset Demo Data</button>
-  <p class="note">This prototype has no backend/database. Changes are temporary and reset when the page reloads.</p>
+
+  <button
+    class="reset"
+    id="resetBtn">
+    Reset Demo Data
+  </button>
+
+  <p class="note">
+    This prototype has no backend/database.
+    Changes are temporary and reset when the page reloads.
+  </p>
+
 </section>
+
 </main>
+
 </div>
-<div class="toast" id="toast"></div>
 
+<div
+  class="toast"
+  id="toast">
+</div>
+
+
+<!-- QR + BARCODE SCANNER LIBRARY -->
 <script src="https://unpkg.com/html5-qrcode" defer></script>
-<script>
-const initialProducts = [
-  {code:"10001",name:"Coca Cola 500ml",stock:50},
-  {code:"10002",name:"Mineral Water 1.5L",stock:80},
-  {code:"10003",name:"Chocolate Biscuit",stock:35},
-  {code:"10004",name:"Potato Chips",stock:42}
-];
 
-let products = JSON.parse(JSON.stringify(initialProducts));
+
+<script>
+
+let products = [];
 let history = [];
 let selectedCode = null;
 let scanner = null;
 
+
+/* -----------------------------
+   BASIC HELPERS
+----------------------------- */
+
 const $ = id => document.getElementById(id);
-function nowTime(){return new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"})}
-function todayKey(){return new Date().toDateString()}
+
+function nowTime(){
+
+  return new Date().toLocaleTimeString(
+    [],
+    {
+      hour:"2-digit",
+      minute:"2-digit"
+    }
+  );
+
+}
+
+function todayKey(){
+
+  return new Date().toDateString();
+
+}
+
+
+/* -----------------------------
+   RENDER DASHBOARD
+----------------------------- */
 
 function render(){
-  $("totalProducts").textContent = products.length;
-  $("totalStock").textContent = products.reduce((s,p)=>s+p.stock,0);
-  $("todayIn").textContent = history.filter(x=>x.type==="IN" && x.day===todayKey()).reduce((s,x)=>s+x.qty,0);
-  $("todayOut").textContent = history.filter(x=>x.type==="OUT" && x.day===todayKey()).reduce((s,x)=>s+x.qty,0);
 
-  $("history").innerHTML = history.length ? history.slice().reverse().map(x=>`
-    <div class="history-item">
-      <div class="h-left"><div class="h-name">${escapeHtml(x.name)}</div><div class="h-meta">${x.time} · Code ${x.code}</div></div>
-      <div><span class="badge ${x.type==="IN"?"inb":"outb"}">${x.type==="IN"?"+":"−"}${x.qty} pcs</span></div>
-    </div>`).join("") : '<div class="empty">No stock movement yet.<br>Scan a product and try Stock IN.</div>';
+  $("totalProducts").textContent =
+    products.length;
 
-  if(selectedCode) showProduct(selectedCode);
-}
-function escapeHtml(s){return s.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
-function findProduct(code){
-  code=String(code).trim();
-  const p=products.find(x=>x.code===code);
-  if(!p){toast("Product not found in demo."); return}
-  selectedCode=code; showProduct(code); toast("Product scanned: "+p.name);
-}
-function showProduct(code){
-  const p=products.find(x=>x.code===code); if(!p)return;
-  $("productBox").classList.add("show");
-  $("productName").textContent=p.name;
-  $("productCode").textContent="QR / Barcode: "+p.code;
-  $("productStock").textContent=p.stock+" pcs";
-}
-function movement(type){
-  if(!selectedCode)return;
-  const p=products.find(x=>x.code===selectedCode);
-  const qty=Math.floor(Number($("qtyInput").value));
-  if(!qty || qty<1){toast("Enter a valid quantity.");return}
-  if(type==="OUT" && qty>p.stock){toast("Not enough stock.");return}
-  p.stock += type==="IN" ? qty : -qty;
-  history.push({code:p.code,name:p.name,qty,type,time:nowTime(),day:todayKey()});
-  $("qtyInput").value=1;
-  render();
-  toast(type==="IN" ? "Stock added successfully." : "Stock removed successfully.");
-}
-function toast(msg){const t=$("toast");t.textContent=msg;t.classList.add("show");clearTimeout(window.tt);window.tt=setTimeout(()=>t.classList.remove("show"),2200)}
 
-$("findBtn").onclick=()=>findProduct($("codeInput").value);
-$("codeInput").addEventListener("keydown",e=>{if(e.key==="Enter")$("findBtn").click()});
-$("inBtn").onclick=()=>movement("IN");
-$("outBtn").onclick=()=>movement("OUT");
-$("resetBtn").onclick=()=>{
-  products=JSON.parse(JSON.stringify(initialProducts));history=[];selectedCode=null;
-  $("productBox").classList.remove("show");$("codeInput").value="";render();toast("Demo reset.");
-};
-
-$("scanBtn").onclick=async()=>{
-  $("scanArea").classList.toggle("active");
-  if(!$("scanArea").classList.contains("active")){
-    if(scanner){try{await scanner.stop();}catch(e){} scanner=null}
-    return;
-  }
-  if(!window.Html5Qrcode){toast("Scanner library is still loading.");return}
-  scanner=new Html5Qrcode("reader");
-  try{
-    await scanner.start(
-      {facingMode:"environment"},
-      {fps:10,qrbox:{width:240,height:180}},
-      async decodedText=>{
-        findProduct(decodedText);
-        try{await scanner.stop();}catch(e){}
-        $("scanArea").classList.remove("active");
-        scanner=null;
-      },
-      ()=>{}
+  $("totalStock").textContent =
+    products.reduce(
+      (sum,p) => sum + p.stock,
+      0
     );
-  }catch(e){
-    toast("Camera unavailable. Use the Demo Code box below.");
+
+
+  $("todayIn").textContent =
+    history
+      .filter(
+        x =>
+          x.type === "IN" &&
+          x.day === todayKey()
+      )
+      .reduce(
+        (sum,x) => sum + x.qty,
+        0
+      );
+
+
+  $("todayOut").textContent =
+    history
+      .filter(
+        x =>
+          x.type === "OUT" &&
+          x.day === todayKey()
+      )
+      .reduce(
+        (sum,x) => sum + x.qty,
+        0
+      );
+
+
+  $("history").innerHTML =
+    history.length
+
+    ?
+
+    history
+      .slice()
+      .reverse()
+      .map(
+        x => `
+
+        <div class="history-item">
+
+          <div class="h-left">
+
+            <div class="h-name">
+              ${escapeHtml(x.name)}
+            </div>
+
+            <div class="h-meta">
+              ${x.time} · Code ${escapeHtml(x.code)}
+            </div>
+
+          </div>
+
+          <div>
+
+            <span
+              class="badge ${
+                x.type === "IN"
+                ? "inb"
+                : "outb"
+              }">
+
+              ${
+                x.type === "IN"
+                ? "+"
+                : "−"
+              }${x.qty} pcs
+
+            </span>
+
+          </div>
+
+        </div>
+
+        `
+      )
+      .join("")
+
+    :
+
+    `
+      <div class="empty">
+
+        No stock movement yet.<br>
+
+        Scan a product and try Stock IN.
+
+      </div>
+    `;
+
+
+  if(selectedCode){
+
+    showProduct(selectedCode);
+
   }
-};
+
+}
+
+
+/* -----------------------------
+   SECURITY
+----------------------------- */
+
+function escapeHtml(value){
+
+  return String(value).replace(
+    /[&<>"']/g,
+    function(match){
+
+      return {
+        "&":"&amp;",
+        "<":"&lt;",
+        ">":"&gt;",
+        '"':"&quot;",
+        "'":"&#039;"
+      }[match];
+
+    }
+  );
+
+}
+
+
+/* -----------------------------
+   PRODUCT SCAN
+----------------------------- */
+
+function findProduct(code){
+
+  code = String(code).trim();
+
+  if(!code){
+
+    toast("No code detected.");
+
+    return;
+
+  }
+
+
+  /*
+    IMPORTANT:
+
+    There is NO MASTER PRODUCT.
+
+    First time a code is scanned:
+    Product 1 is created.
+
+    Same code again:
+    Existing Product 1 is opened.
+  */
+
+  let product =
+    products.find(
+      x => x.code === code
+    );
+
+
+  if(!product){
+
+    product = {
+
+      code:code,
+
+      name:
+        "Product " +
+        (products.length + 1),
+
+      stock:0
+
+    };
+
+    products.push(product);
+
+  }
+
+
+  selectedCode = code;
+
+  showProduct(code);
+
+  $("codeInput").value = "";
+
+  toast(
+    product.name +
+    " scanned"
+  );
+
+}
+
+
+/* -----------------------------
+   SHOW PRODUCT
+----------------------------- */
+
+function showProduct(code){
+
+  const product =
+    products.find(
+      x => x.code === code
+    );
+
+
+  if(!product) return;
+
+
+  $("productBox")
+    .classList
+    .add("show");
+
+
+  $("productName")
+    .textContent =
+    product.name;
+
+
+  $("productCode")
+    .textContent =
+    "QR / Barcode: " +
+    product.code;
+
+
+  $("productStock")
+    .textContent =
+    product.stock +
+    " pcs";
+
+}
+
+
+/* -----------------------------
+   STOCK IN / OUT
+----------------------------- */
+
+function movement(type){
+
+  if(!selectedCode){
+
+    toast("Scan a product first.");
+
+    return;
+
+  }
+
+
+  const product =
+    products.find(
+      x => x.code === selectedCode
+    );
+
+
+  const qty =
+    Math.floor(
+      Number(
+        $("qtyInput").value
+      )
+    );
+
+
+  if(!qty || qty < 1){
+
+    toast("Enter a valid quantity.");
+
+    return;
+
+  }
+
+
+  if(
+    type === "OUT" &&
+    qty > product.stock
+  ){
+
+    toast("Not enough stock.");
+
+    return;
+
+  }
+
+
+  if(type === "IN"){
+
+    product.stock += qty;
+
+  }else{
+
+    product.stock -= qty;
+
+  }
+
+
+  history.push({
+
+    code:product.code,
+
+    name:product.name,
+
+    qty:qty,
+
+    type:type,
+
+    time:nowTime(),
+
+    day:todayKey()
+
+  });
+
+
+  $("qtyInput").value = 1;
+
+
+  render();
+
+
+  toast(
+    type === "IN"
+      ? "Stock added successfully."
+      : "Stock removed successfully."
+  );
+
+}
+
+
+/* -----------------------------
+   TOAST
+----------------------------- */
+
+function toast(message){
+
+  const element =
+    $("toast");
+
+
+  element.textContent =
+    message;
+
+
+  element.classList.add(
+    "show"
+  );
+
+
+  clearTimeout(
+    window.toastTimer
+  );
+
+
+  window.toastTimer =
+    setTimeout(
+      () => {
+
+        element.classList.remove(
+          "show"
+        );
+
+      },
+      2200
+    );
+
+}
+
+
+/* -----------------------------
+   MANUAL DEMO CODE
+----------------------------- */
+
+$("findBtn").onclick =
+  () => {
+
+    findProduct(
+      $("codeInput").value
+    );
+
+  };
+
+
+$("codeInput")
+  .addEventListener(
+    "keydown",
+    event => {
+
+      if(event.key === "Enter"){
+
+        $("findBtn").click();
+
+      }
+
+    }
+  );
+
+
+/* -----------------------------
+   BUTTONS
+----------------------------- */
+
+$("inBtn").onclick =
+  () => movement("IN");
+
+
+$("outBtn").onclick =
+  () => movement("OUT");
+
+
+/* -----------------------------
+   RESET
+----------------------------- */
+
+$("resetBtn").onclick =
+  async () => {
+
+    if(scanner){
+
+      try{
+
+        await scanner.stop();
+
+      }catch(error){}
+
+      scanner = null;
+
+    }
+
+
+    products = [];
+
+    history = [];
+
+    selectedCode = null;
+
+
+    $("productBox")
+      .classList
+      .remove("show");
+
+
+    $("scanArea")
+      .classList
+      .remove("active");
+
+
+    $("codeInput").value = "";
+
+
+    render();
+
+
+    toast(
+      "Demo reset."
+    );
+
+  };
+
+
+/* =================================================
+   CAMERA QR + BARCODE SCANNER
+================================================= */
+
+$("scanBtn").onclick =
+  async () => {
+
+    const area =
+      $("scanArea");
+
+
+    /*
+      CLOSE SCANNER
+    */
+
+    if(
+      area.classList.contains(
+        "active"
+      )
+    ){
+
+      area.classList.remove(
+        "active"
+      );
+
+
+      if(scanner){
+
+        try{
+
+          await scanner.stop();
+
+        }catch(error){}
+
+        scanner = null;
+
+      }
+
+      $("scanBtn").textContent =
+        "📷 Open Camera Scanner";
+
+      return;
+
+    }
+
+
+    /*
+      OPEN SCANNER
+    */
+
+    area.classList.add(
+      "active"
+    );
+
+
+    $("scanBtn").textContent =
+      "✕ Close Scanner";
+
+
+    if(!window.Html5Qrcode){
+
+      toast(
+        "Scanner library is loading..."
+      );
+
+      return;
+
+    }
+
+
+    scanner =
+      new Html5Qrcode(
+        "reader"
+      );
+
+
+    /*
+      IMPORTANT:
+
+      Enable BOTH QR and
+      common BARCODE formats.
+    */
+
+    const formatsToSupport = [
+
+      Html5QrcodeSupportedFormats.QR_CODE,
+
+      Html5QrcodeSupportedFormats.EAN_13,
+
+      Html5QrcodeSupportedFormats.EAN_8,
+
+      Html5QrcodeSupportedFormats.UPC_A,
+
+      Html5QrcodeSupportedFormats.UPC_E,
+
+      Html5QrcodeSupportedFormats.CODE_128,
+
+      Html5QrcodeSupportedFormats.CODE_39,
+
+      Html5QrcodeSupportedFormats.CODE_93,
+
+      Html5QrcodeSupportedFormats.ITF
+
+    ];
+
+
+    const config = {
+
+      fps:10,
+
+      qrbox:{
+        width:260,
+        height:180
+      },
+
+      aspectRatio:1.777778,
+
+      formatsToSupport:
+        formatsToSupport,
+
+      experimentalFeatures:{
+        useBarCodeDetectorIfSupported:true
+      }
+
+    };
+
+
+    try{
+
+      await scanner.start(
+
+        {
+          facingMode:"environment"
+        },
+
+        config,
+
+        async decodedText => {
+
+          /*
+            Barcode or QR detected
+          */
+
+          findProduct(
+            decodedText
+          );
+
+
+          /*
+            Stop camera after
+            successful scan
+          */
+
+          try{
+
+            await scanner.stop();
+
+          }catch(error){}
+
+
+          scanner = null;
+
+
+          area.classList.remove(
+            "active"
+          );
+
+
+          $("scanBtn").textContent =
+            "📷 Open Camera Scanner";
+
+        },
+
+        () => {
+
+          /*
+            Ignore scan failures.
+
+            Scanner continuously tries
+            to detect barcode/QR.
+          */
+
+        }
+
+      );
+
+    }catch(error){
+
+      console.error(
+        "Scanner error:",
+        error
+      );
+
+
+      area.classList.remove(
+        "active"
+      );
+
+
+      $("scanBtn").textContent =
+        "📷 Open Camera Scanner";
+
+
+      toast(
+        "Camera unavailable. Check camera permission or use Demo Code."
+      );
+
+    }
+
+  };
+
+
+/* -----------------------------
+   INITIAL RENDER
+----------------------------- */
 
 render();
+
 </script>
+
 </body>
 </html>
